@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ConsoleGL:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ConsoleGL_jar</output-path>
+    <root id="archive" name="ConsoleGL.jar">
+      <element id="module-output" name="ConsoleGL" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/24.0.0/annotations-24.0.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
