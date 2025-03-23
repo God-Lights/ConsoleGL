@@ -8,15 +8,21 @@ import net.godlights.edshin.java.console.cmd.CommandTest;
 import net.godlights.edshin.java.console.cmd.lang.Translator;
 import net.godlights.edshin.java.console.java.Java;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.awt.*;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class MainRun {
     static String cd = "";
     public static void main(String[] args) {
+
         Map<String, Consumer<String[]>> map = new HashMap<>(Map.of());
         map.put("hello", (arg) -> {
             Console.print(Console.translator.translate("welcome.message"));
@@ -77,12 +83,25 @@ public class MainRun {
                 Console.error(new Exception("It was already contained"));
             }
         });
+        map.put("open", (arg) -> {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().browse(new URI(args[0]));
+                    System.out.println(args[0] + " 페이지를 열었습니다.");
+                } catch (IOException | URISyntaxException e) {
+                    System.err.println("웹페이지를 여는 중 오류가 발생했습니다: " + e.getMessage());
+                }
+            } else {
+                System.err.println("이 시스템은 Desktop을 지원하지 않습니다.");
+            }
+        });
         while(true) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             String text = "";
-            System.out.print(cd+"> ");
+            Console.console(cd+"> ");
             try {
                 text = bufferedReader.readLine();
+                Java.outLog("> "+text);
             } catch(IOException e) {
                 Console.print(ANSIColor.RED+e.getMessage());
             }
@@ -112,9 +131,6 @@ public class MainRun {
             }
         }
     }
-    public void onEnable() {
-        Console.getCmd("tee").registerCmd(new CommandTest());
-    }
     public static void changeCd(String name) {
         if(!Objects.equals(name, "reset") && name != null) {
             cd = name+" ";
@@ -124,4 +140,5 @@ public class MainRun {
             Console.error(new Exception("Argument is null"));
         }
     }
+
 }
