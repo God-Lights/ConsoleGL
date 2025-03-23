@@ -12,7 +12,7 @@ This is Command Console.
     exit
 ```
 
-## Add Command
+## Add Command(after v0.1.1a)
 
 in source code,
 #### src/net/godlights/edshin/java/console/cmd/CommandTest.java
