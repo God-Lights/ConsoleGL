@@ -2,6 +2,8 @@
 
 This is Command Console.
 
+## Run Console
+
 #### run.bat
 ```batch
     @echo off
@@ -9,3 +11,29 @@ This is Command Console.
     java -jar <File> nogui
     exit
 ```
+
+## Add Command
+
+in source code,
+#### src/net/godlights/edshin/java/console/cmd/CommandTest.java
+```java
+    package net.godlights.edshin.java.console.cmd;
+
+    public class CommandTest implements CmdExecutor{
+        @Override
+        public boolean onCmd(String[] args) {
+            //code
+            return false;
+        }
+    }
+```
+
+and write in console
+
+```console
+    > cmd <CommandName>
+    
+    > <CommandName> <..args>
+```
+
+
