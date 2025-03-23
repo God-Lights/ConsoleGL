@@ -2,6 +2,7 @@ package main;
 
 import net.godlights.edshin.java.console.ANSIColor;
 import net.godlights.edshin.java.console.Console;
+import net.godlights.edshin.java.console.cmd.CmdExecutor;
 import net.godlights.edshin.java.console.cmd.Command;
 import net.godlights.edshin.java.console.cmd.CommandTest;
 import net.godlights.edshin.java.console.cmd.lang.Translator;
@@ -26,11 +27,15 @@ public class MainRun {
         map.put("test", (arg) -> {
             if(arg[0].equals("rainbow")) {
                 Console.print(Console.translator.translate("rainbow.text"));
+            } else {
+                Console.error(new Exception("Command Error/Code 488"));
             }
         });
         map.put("reload", (arg) -> {
             if(arg[0].equals("confirm")) {
                 Java.ReloadConsole();
+            } else {
+                Console.error(new Exception("Command Error/Code 488"));
             }
         });
         map.put("info",(arg) -> {
@@ -39,11 +44,15 @@ public class MainRun {
                         Console.print("OS: " + System.getProperty("os.name") + "\nver: " + System.getProperty("os.version"));
                 case "java" ->
                         Console.print("Java Version: " + System.getProperty("java.version") + "\nJVM: " + System.getProperty("java.vm.name") + " " + System.getProperty("java.vm.version") + "\nJRE: " + System.getProperty("java.runtime.name"));
+                case null, default ->
+                        Console.error(new Exception("Command Error/Code 488"));
             }
         });
         map.put("cd", (arg) -> {
             if(arg[0].equals("name")) {
                 changeCd(arg[1]);
+            } else {
+                Console.error(new Exception("Command Error/Code 488"));
             }
         });
         map.put("lang",(arg) -> {
@@ -53,6 +62,19 @@ public class MainRun {
                 if(arg[1] != null) {
                     Console.langChange(arg[1]);
                 }
+            } else {
+                Console.error(new Exception("Command Error/Code 488"));
+            }
+        });
+        map.put("cmd", (arg) -> {
+            if(!map.containsKey(arg[0])) {
+                try {
+                    Console.getCmd(arg[0]).registerCmd(new CommandTest());
+                } catch(Exception e) {
+                    Console.error(e);
+                }
+            } else {
+                Console.error(new Exception("It was already contained"));
             }
         });
         while(true) {
@@ -74,9 +96,17 @@ public class MainRun {
                 } catch(Exception e) {
                     Console.print(ANSIColor.RED+e.getMessage());
                 }
+            } else if(Command.getCmdMap().containsKey(cmdName)) {
+                try {
+                    Command.getCmdMap().get(cmdName).accept(arg);
+                } catch(Exception e) {
+                    Console.error(e);
+                }
+            } else if(!cmdLarn[0].equals("exit") && !cmdLarn[0].equals("stop")){
+                Console.error(new Exception("Command wasn't found/Code 433"));
             }
             Console.print(Arrays.toString(arg));
-            if(cmdLarn[0].equals("exit")) {
+            if(cmdLarn[0].equals("exit") || cmdLarn[0].equals("stop")) {
                 Console.print("End console.");
                 break;
             }
